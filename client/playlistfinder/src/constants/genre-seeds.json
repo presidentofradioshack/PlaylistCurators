@@ -1,0 +1,506 @@
+[
+    {
+        "label": "Acoustic",
+        "value": "acoustic"
+    },
+    {
+        "label": "Afrobeat",
+        "value": "afrobeat"
+    },
+    {
+        "label": "Alt-rock",
+        "value": "alt-rock"
+    },
+    {
+        "label": "Alternative",
+        "value": "alternative"
+    },
+    {
+        "label": "Ambient",
+        "value": "ambient"
+    },
+    {
+        "label": "Anime",
+        "value": "anime"
+    },
+    {
+        "label": "Black-metal",
+        "value": "black-metal"
+    },
+    {
+        "label": "Bluegrass",
+        "value": "bluegrass"
+    },
+    {
+        "label": "Blues",
+        "value": "blues"
+    },
+    {
+        "label": "Bossanova",
+        "value": "bossanova"
+    },
+    {
+        "label": "Brazil",
+        "value": "brazil"
+    },
+    {
+        "label": "Breakbeat",
+        "value": "breakbeat"
+    },
+    {
+        "label": "British",
+        "value": "british"
+    },
+    {
+        "label": "Cantopop",
+        "value": "cantopop"
+    },
+    {
+        "label": "Chicago-house",
+        "value": "chicago-house"
+    },
+    {
+        "label": "Children",
+        "value": "children"
+    },
+    {
+        "label": "Chill",
+        "value": "chill"
+    },
+    {
+        "label": "Classical",
+        "value": "classical"
+    },
+    {
+        "label": "Club",
+        "value": "club"
+    },
+    {
+        "label": "Comedy",
+        "value": "comedy"
+    },
+    {
+        "label": "Country",
+        "value": "country"
+    },
+    {
+        "label": "Dance",
+        "value": "dance"
+    },
+    {
+        "label": "Dancehall",
+        "value": "dancehall"
+    },
+    {
+        "label": "Death-metal",
+        "value": "death-metal"
+    },
+    {
+        "label": "Deep-house",
+        "value": "deep-house"
+    },
+    {
+        "label": "Detroit-techno",
+        "value": "detroit-techno"
+    },
+    {
+        "label": "Disco",
+        "value": "disco"
+    },
+    {
+        "label": "Disney",
+        "value": "disney"
+    },
+    {
+        "label": "Drum-and-bass",
+        "value": "drum-and-bass"
+    },
+    {
+        "label": "Dub",
+        "value": "dub"
+    },
+    {
+        "label": "Dubstep",
+        "value": "dubstep"
+    },
+    {
+        "label": "Edm",
+        "value": "edm"
+    },
+    {
+        "label": "Electro",
+        "value": "electro"
+    },
+    {
+        "label": "Electronic",
+        "value": "electronic"
+    },
+    {
+        "label": "Emo",
+        "value": "emo"
+    },
+    {
+        "label": "Folk",
+        "value": "folk"
+    },
+    {
+        "label": "Forro",
+        "value": "forro"
+    },
+    {
+        "label": "French",
+        "value": "french"
+    },
+    {
+        "label": "Funk",
+        "value": "funk"
+    },
+    {
+        "label": "Garage",
+        "value": "garage"
+    },
+    {
+        "label": "German",
+        "value": "german"
+    },
+    {
+        "label": "Gospel",
+        "value": "gospel"
+    },
+    {
+        "label": "Goth",
+        "value": "goth"
+    },
+    {
+        "label": "Grindcore",
+        "value": "grindcore"
+    },
+    {
+        "label": "Groove",
+        "value": "groove"
+    },
+    {
+        "label": "Grunge",
+        "value": "grunge"
+    },
+    {
+        "label": "Guitar",
+        "value": "guitar"
+    },
+    {
+        "label": "Happy",
+        "value": "happy"
+    },
+    {
+        "label": "Hard-rock",
+        "value": "hard-rock"
+    },
+    {
+        "label": "Hardcore",
+        "value": "hardcore"
+    },
+    {
+        "label": "Hardstyle",
+        "value": "hardstyle"
+    },
+    {
+        "label": "Heavy-metal",
+        "value": "heavy-metal"
+    },
+    {
+        "label": "Hip-hop",
+        "value": "hip-hop"
+    },
+    {
+        "label": "Holidays",
+        "value": "holidays"
+    },
+    {
+        "label": "Honky-tonk",
+        "value": "honky-tonk"
+    },
+    {
+        "label": "House",
+        "value": "house"
+    },
+    {
+        "label": "Idm",
+        "value": "idm"
+    },
+    {
+        "label": "Indian",
+        "value": "indian"
+    },
+    {
+        "label": "Indie",
+        "value": "indie"
+    },
+    {
+        "label": "Indie-pop",
+        "value": "indie-pop"
+    },
+    {
+        "label": "Industrial",
+        "value": "industrial"
+    },
+    {
+        "label": "Iranian",
+        "value": "iranian"
+    },
+    {
+        "label": "J-dance",
+        "value": "j-dance"
+    },
+    {
+        "label": "J-idol",
+        "value": "j-idol"
+    },
+    {
+        "label": "J-pop",
+        "value": "j-pop"
+    },
+    {
+        "label": "J-rock",
+        "value": "j-rock"
+    },
+    {
+        "label": "Jazz",
+        "value": "jazz"
+    },
+    {
+        "label": "K-pop",
+        "value": "k-pop"
+    },
+    {
+        "label": "Kids",
+        "value": "kids"
+    },
+    {
+        "label": "Latin",
+        "value": "latin"
+    },
+    {
+        "label": "Latino",
+        "value": "latino"
+    },
+    {
+        "label": "Malay",
+        "value": "malay"
+    },
+    {
+        "label": "Mandopop",
+        "value": "mandopop"
+    },
+    {
+        "label": "Metal",
+        "value": "metal"
+    },
+    {
+        "label": "Metal-misc",
+        "value": "metal-misc"
+    },
+    {
+        "label": "Metalcore",
+        "value": "metalcore"
+    },
+    {
+        "label": "Minimal-techno",
+        "value": "minimal-techno"
+    },
+    {
+        "label": "Movies",
+        "value": "movies"
+    },
+    {
+        "label": "Mpb",
+        "value": "mpb"
+    },
+    {
+        "label": "New-age",
+        "value": "new-age"
+    },
+    {
+        "label": "New-release",
+        "value": "new-release"
+    },
+    {
+        "label": "Opera",
+        "value": "opera"
+    },
+    {
+        "label": "Pagode",
+        "value": "pagode"
+    },
+    {
+        "label": "Party",
+        "value": "party"
+    },
+    {
+        "label": "Philippines-opm",
+        "value": "philippines-opm"
+    },
+    {
+        "label": "Piano",
+        "value": "piano"
+    },
+    {
+        "label": "Pop",
+        "value": "pop"
+    },
+    {
+        "label": "Pop-film",
+        "value": "pop-film"
+    },
+    {
+        "label": "Post-dubstep",
+        "value": "post-dubstep"
+    },
+    {
+        "label": "Power-pop",
+        "value": "power-pop"
+    },
+    {
+        "label": "Progressive-house",
+        "value": "progressive-house"
+    },
+    {
+        "label": "Psych-rock",
+        "value": "psych-rock"
+    },
+    {
+        "label": "Punk",
+        "value": "punk"
+    },
+    {
+        "label": "Punk-rock",
+        "value": "punk-rock"
+    },
+    {
+        "label": "R-n-b",
+        "value": "r-n-b"
+    },
+    {
+        "label": "Rainy-day",
+        "value": "rainy-day"
+    },
+    {
+        "label": "Reggae",
+        "value": "reggae"
+    },
+    {
+        "label": "Reggaeton",
+        "value": "reggaeton"
+    },
+    {
+        "label": "Road-trip",
+        "value": "road-trip"
+    },
+    {
+        "label": "Rock",
+        "value": "rock"
+    },
+    {
+        "label": "Rock-n-roll",
+        "value": "rock-n-roll"
+    },
+    {
+        "label": "Rockabilly",
+        "value": "rockabilly"
+    },
+    {
+        "label": "Romance",
+        "value": "romance"
+    },
+    {
+        "label": "Sad",
+        "value": "sad"
+    },
+    {
+        "label": "Salsa",
+        "value": "salsa"
+    },
+    {
+        "label": "Samba",
+        "value": "samba"
+    },
+    {
+        "label": "Sertanejo",
+        "value": "sertanejo"
+    },
+    {
+        "label": "Show-tunes",
+        "value": "show-tunes"
+    },
+    {
+        "label": "Singer-songwriter",
+        "value": "singer-songwriter"
+    },
+    {
+        "label": "Ska",
+        "value": "ska"
+    },
+    {
+        "label": "Sleep",
+        "value": "sleep"
+    },
+    {
+        "label": "Songwriter",
+        "value": "songwriter"
+    },
+    {
+        "label": "Soul",
+        "value": "soul"
+    },
+    {
+        "label": "Soundtracks",
+        "value": "soundtracks"
+    },
+    {
+        "label": "Spanish",
+        "value": "spanish"
+    },
+    {
+        "label": "Study",
+        "value": "study"
+    },
+    {
+        "label": "Summer",
+        "value": "summer"
+    },
+    {
+        "label": "Swedish",
+        "value": "swedish"
+    },
+    {
+        "label": "Synth-pop",
+        "value": "synth-pop"
+    },
+    {
+        "label": "Tango",
+        "value": "tango"
+    },
+    {
+        "label": "Techno",
+        "value": "techno"
+    },
+    {
+        "label": "Trance",
+        "value": "trance"
+    },
+    {
+        "label": "Trip-hop",
+        "value": "trip-hop"
+    },
+    {
+        "label": "Turkish",
+        "value": "turkish"
+    },
+    {
+        "label": "Work-out",
+        "value": "work-out"
+    },
+    {
+        "label": "World-music",
+        "value": "world-music"
+    }
+]

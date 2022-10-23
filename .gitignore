@@ -1,0 +1,6 @@
+.cache
+
+# frontend
+app/__pycache__
+app/spotify/__pycache__
+venv
