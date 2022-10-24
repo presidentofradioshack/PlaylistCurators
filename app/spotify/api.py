@@ -162,7 +162,7 @@ class SpotifyApi(object):
 
 		return data
 
-	def get_recommendations(self, seed_artists=None, seed_genres=None, seed_tracks=None, limit=50):
+	def get_recommendations(self, seed_artists=None, seed_genres=None, seed_tracks=None, limit=10):
 		if (seed_artists is None or seed_genres is None or seed_tracks is None):
 			return False
 
