@@ -1,6 +1,9 @@
-from urllib.parse import urlparse
 import dotenv
 import os
+import urllib.parse
+import requests
+from urllib.parse import urlencode
+from googleapiclient.discovery import build
 from flask import Flask, request
 from app.spotify.api import SpotifyApi
 from .util import StringUtil
@@ -101,23 +104,58 @@ def categories():
 @app.route('/recommendations')
 def recommendations():
 	keyword = request.args.get('keyword')
-	genres = request.args.get('genres').split(',')
-	artist_ids = request.args.get('artists').split(',')
-	track_ids = request.args.get('tracks').split(',')
+	genres = request.args.get('genres')
+	artist_ids = request.args.get('artists')
+	track_ids = request.args.get('tracks')
 
 	artists = []
-	for id in artist_ids:
+	for id in artist_ids.split(','):
 		artist = api.get_artist(id=id)
 		artists.append(artist['name'])
 
 	if genres and artists and track_ids:
-		response = api.get_recommendations(seed_artists=artist_ids, seed_genres=genres, seed_tracks=track_ids)
-		
-		playlists = []
-		# for track in response['tracks']:
-		# 	# scrape https://playlists.dags.dev/tracks for playlists that include song (eventually implement my own) - WEIGHT: 1
-		# 	return
+	# 	response = api.get_recommendations(seed_artists=artist_ids, seed_genres=genres, seed_tracks=track_ids)
+	# 	api_key = os.getenv('API_KEY')
+	# 	cx = os.getenv('SEARCH_ENGINE_ID')
 
+		playlists = []
+	# 	for track in response['tracks']:
+	# 		artist = track['artists'][0]['name']
+	# 		name = track['name']
+	# 		page = 1
+	# 		start = (page - 1) * 10 + 1
+	# 		query_filter = f'inurl:open.spotify.com/playlist+intext:{name} {artist}'
+	# 		query_string = urlencode({ 'q': query_filter, 'key': api_key, 'cx': cx, 'start': start})
+	# 		endpoint = 'https://www.googleapis.com/customsearch/v1/siterestrict/'
+
+	# 		url = f'{endpoint}?{query_string}'
+
+	# 		data = requests.get(url).json()
+
+	# 		for item in data['items']:
+	# 			email = StringUtil.check_string_for_email(item['snippet'])
+	# 			insta = StringUtil.check_string_for_insta(item['snippet'])
+	# 			id = item['pagemap']['metatags']['og:url'].split('/')[0]
+	# 			title = item['pagemap']['metatags']['og:title']
+	# 			url = item['pagemap']['metatags']['og:url']
+
+	# 			# if email or insta:
+	# 			# 	playlists.append({
+	# 			# 		'id': id,
+	# 			# 		'name': item['name'],
+	# 			# 		'description': item['description'],
+	# 			# 		'url': item['href'],
+	# 			# 		'owner': {
+	# 			# 			'id': item['owner']['id'],
+	# 			# 			'display_name': item['owner']['display_name'],
+	# 			# 			'url': item['owner']['href'],
+	# 			# 			'email': email,
+	# 			# 			'insta': insta
+	# 			# 		}
+	# 			# 	})
+
+
+	# 	return {}
 		if keyword:
 			offset = 0
 			while offset < 1000:
@@ -137,7 +175,7 @@ def recommendations():
 				playlists.extend(playlist_info['playlists'])
 				offset += 50
 				
-		for genre in genres:
+		for genre in genres.split(','):
 			offset = 0
 			while (offset < 1000):
 				print(f'Genre: {genre} | Offset: {offset} | Playlists found: {len(playlists)}')
