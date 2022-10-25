@@ -5,6 +5,8 @@ import os
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 import requests
+import asyncio
+import aiohttp
 
 class SpotifyApi(object):
 	access_token = None
@@ -111,12 +113,32 @@ class SpotifyApi(object):
 		data = response.json()
 
 		return data
+
+	async def search_async(self, session, query, search_type='artists', limit=50, offset=0, next_url=None):
+		if next_url:
+			lookup_url = next_url
+		else:
+			endpoint = 'https://api.spotify.com/v1/search'
+			query_string = urlencode({ 'q': query, 'type': search_type.lower(), 'limit': limit, 'offset': offset })
+
+			lookup_url = f'{endpoint}?{query_string}'
+
+		async with session.get(lookup_url, headers=self.get_resource_headers()) as response:
+			if response.status not in range(200, 299):
+				return {
+					'Status': response.status
+				}
+
+			return await response.json()
 		
-	def search_artists(self, query):
-		return self.search(query=f'artist:{query}', search_type='artist')
+	async def search_artists(self, query):
+		return await self.search(query=f'artist:{query}', search_type='artist')
 
 	def search_playlists(self, query, offset=0):
 		return self.search(query=query, search_type='playlist', offset=offset)
+
+	async def search_playlists_async(self, session, query, offset=0):
+		return await self.search_async(session, query=query, search_type='playlist', offset=offset)
 
 	def get_artist(self, id):
 		endpoint = f'https://api.spotify.com/v1/artists/{id}'
@@ -162,7 +184,7 @@ class SpotifyApi(object):
 
 		return data
 
-	def get_recommendations(self, seed_artists=None, seed_genres=None, seed_tracks=None, limit=50):
+	def get_recommendations(self, seed_artists=None, seed_genres=None, seed_tracks=None, limit=10):
 		if (seed_artists is None or seed_genres is None or seed_tracks is None):
 			return False
 
