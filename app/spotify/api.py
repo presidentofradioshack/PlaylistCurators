@@ -1,12 +1,12 @@
+import asyncio
 import base64
-from cgitb import lookup
 import datetime
 import os
+from cgitb import lookup
 from urllib.parse import urlencode
-from dotenv import load_dotenv
+
 import requests
-import asyncio
-import aiohttp
+
 
 class SpotifyApi(object):
 	access_token = None
@@ -94,7 +94,7 @@ class SpotifyApi(object):
 
 		return data
 	
-	def search(self, query, search_type='artists', limit=50, offset=0, next_url=None):
+	def search(self, query: str, search_type: str='artists', limit: int=50, offset: int=0, next_url: str=None) -> dict:
 		if next_url:
 			lookup_url = next_url
 		else:

@@ -1,24 +1,20 @@
-import dotenv
-import os
-import urllib.parse
-import requests
-import json
-from pprint import pp
 import asyncio
+import os
+
 import aiohttp
-from urllib.parse import urlencode
-from googleapiclient.discovery import build
+import requests
 from flask import Flask, request
+from googleapiclient.discovery import build
+
 from app.spotify.api import SpotifyApi
+
 from .util import StringUtil
 
 app = Flask(__name__)
 
-dotenv.load_dotenv()
-
 api = SpotifyApi(os.getenv('CLIENT_ID'), os.getenv('CLIENT_SECRET'))
 
-def extract_playlist_info(response):
+def extract_playlist_info(response: list) -> dict:
 	playlists = []
 
 	for playlist_group in response:
@@ -68,8 +64,19 @@ async def get_all_queries(session: aiohttp.ClientSession, queries: list) -> list
 	results = await asyncio.gather(*tasks)
 	return results
 
+@app.route('/search')
+def search():
+	query = request.args.get('query')
+	type = request.args.get('type')
+	limit = request.args.get('limit')
+
+	response = api.search(query=query, search_type=type, limit=limit)
+
+	items = response[f'{type}s']['items']
+	return items
+
 @app.route('/recommendations')
-def recommendations():
+def recommendations() -> list:
 	keyword = request.args.get('keyword')
 	genres = request.args.get('genres')
 	artist_ids = request.args.get('artists') 
