@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 
 from app.spotify.api import SpotifyApi
 
+from .google import *
 from .util import StringUtil
 
 app = Flask(__name__)
@@ -19,8 +20,6 @@ def extract_playlist_info(response: list) -> dict:
 
 	for playlist_group in response:
 		items = playlist_group['playlists']['items']
-		next = playlist_group['playlists']['next']
-		offset = playlist_group['playlists']['offset']
 
 		for playlist in items:
 			email = StringUtil.check_string_for_email(playlist['description'])
@@ -31,7 +30,7 @@ def extract_playlist_info(response: list) -> dict:
 					'id': playlist['id'],
 					'name': playlist['name'],
 					'description': playlist['description'],
-					'url': playlist['href'],
+					'url': playlist['external_urls']['spotify'],
 					'tracks': playlist['tracks']['total'],
 					'owner': {
 						'id': playlist['owner']['id'],
@@ -42,23 +41,19 @@ def extract_playlist_info(response: list) -> dict:
 					}
 				})
 
-	return {
-		'playlists': playlists,
-		'next': next,
-		'offset': offset
-	}
-
+	return playlists
 
 async def get_recommendations(queries: list) -> list:
 	async with aiohttp.ClientSession() as session:
-		data = await get_all_queries(session=session, queries=queries)
-		return data
+		data = await get_all_queries(session, queries)
+		results = extract_playlist_info(data)
+		return results
 
 async def get_all_queries(session: aiohttp.ClientSession, queries: list) -> list:
 	tasks = []
 	for query in queries:
 		for offset in range(0, 1000, 50):
-			task = asyncio.create_task(api.search_playlists_async(session=session, query=query, offset=offset))
+			task = asyncio.create_task(api.search_playlists_async(session, query, offset))
 			tasks.append(task)
 	
 	results = await asyncio.gather(*tasks)
@@ -70,7 +65,7 @@ def search():
 	type = request.args.get('type')
 	limit = request.args.get('limit')
 
-	response = api.search(query=query, search_type=type, limit=limit)
+	response = api.search(query, type, limit)
 
 	items = response[f'{type}s']['items']
 	return items
@@ -82,24 +77,39 @@ def recommendations() -> list:
 	artist_ids = request.args.get('artists') 
 	track_ids = request.args.get('tracks')
 
-	genres = genres.split(',')
+	primary_genre = genres.split(',')[0]
 
 	if genres and artist_ids and track_ids:
+		google_urls = []
+		playlists = []
+
+		recommendations = api.get_recommendations(artist_ids, primary_genre, track_ids, 5)
+		for track in recommendations['tracks']:
+			track_name = track['name']
+			track_artist = track['artists'][0]['name']
+
+			google_urls.append(build_search_url(track_name, track_artist))
+
+		# if google_urls:
+		# 	google_playlists = asyncio.run(get_playlists(google_urls))
+		# 	playlists.extend(google_playlists)
+
 		artists = []
 		for id in artist_ids.split(','):
 			artist = api.get_artist(id=id)
 			artists.append(artist['name'])
 
-		playlists = []
+		genres = genres.split(',')
 
-		queries = [keyword, *artists, *genres]
+		queries = [*artists, *genres]
+
+		if keyword:
+			queries.insert(0, keyword)
 
 		results = asyncio.run(get_recommendations(queries=queries))
-		
 		playlists.extend(results)
-		data = extract_playlist_info(playlists)
 
-		return data['playlists']
+		return playlists
 
 if __name__ == '__main__':
 	app.run()
