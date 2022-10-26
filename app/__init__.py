@@ -4,7 +4,6 @@ import os
 import aiohttp
 import requests
 from flask import Flask, request
-from googleapiclient.discovery import build
 
 from app.spotify.api import SpotifyApi
 
@@ -105,6 +104,8 @@ def recommendations() -> list:
 
 		if keyword:
 			queries.insert(0, keyword)
+
+		print(queries)
 
 		results = asyncio.run(get_recommendations(queries=queries))
 		playlists.extend(results)
