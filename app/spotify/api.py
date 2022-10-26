@@ -114,22 +114,21 @@ class SpotifyApi(object):
 
 		return data
 
-	async def search_async(self, session, query, search_type='artists', limit=50, offset=0, next_url=None):
-		if next_url:
-			lookup_url = next_url
-		else:
+	async def search_async(self, session, query, search_type='artists', limit=50, offset=0):
+		if query:
 			endpoint = 'https://api.spotify.com/v1/search'
 			query_string = urlencode({ 'q': query, 'type': search_type.lower(), 'limit': limit, 'offset': offset })
 
 			lookup_url = f'{endpoint}?{query_string}'
 
-		async with session.get(lookup_url, headers=self.get_resource_headers()) as response:
-			if response.status not in range(200, 299):
-				return {
-					'Status': response.status
-				}
+			async with session.get(lookup_url, headers=self.get_resource_headers()) as response:
+				if response.status not in range(200, 299):
+					return {
+						'Status': response.status,
+						'URL': lookup_url
+					}
 
-			return await response.json()
+				return await response.json()
 		
 	async def search_artists(self, query):
 		return await self.search(query=f'artist:{query}', search_type='artist')

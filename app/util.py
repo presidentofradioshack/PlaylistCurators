@@ -1,4 +1,5 @@
-from re import search, findall
+from re import findall, search, sub
+
 
 class StringUtil():
 	def check_string_for_email(string):
@@ -15,8 +16,10 @@ class StringUtil():
 
 		if matches:
 			for match in matches:
-				if '.' not in match:
-					handle = match
+				no_special_characters = sub('/[^a-zA-Z0-9\.\_@]/g', '', match)
+
+				if '.com' not in no_special_characters:
+					handle = no_special_characters
 
 					return handle
 		
