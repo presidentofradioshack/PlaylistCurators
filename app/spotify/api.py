@@ -1,8 +1,5 @@
-import asyncio
 import base64
 import datetime
-import os
-from cgitb import lookup
 from urllib.parse import urlencode
 
 import requests
