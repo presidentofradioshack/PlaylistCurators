@@ -1,54 +1,70 @@
 import asyncio
 import os
-
 import aiohttp
-import requests
-from flask import Blueprint, Flask, request
-
-from app.spotify.api import SpotifyApi
-
+from flask import Blueprint, request
+from app.spotify.api import *
+from app.models.Artist import Artist
+from app.models.Playlist import Playlist
+from app.models.Owner import Owner
+from app.models.Playlist import PlaylistSchema
 from .google import *
 from .util import StringUtil
+from app.models.Song import Song
+from app.database import db
 
 playlist_finder_blueprint = Blueprint('playlist_finder_blueprint', __name__)
 
 api = SpotifyApi(os.getenv('CLIENT_ID'), os.getenv('CLIENT_SECRET'))
 
-def extract_playlist_info(response: list) -> dict:
+def extract_playlist_info(response: list):
 	playlists = []
 
 	for playlist_group in response:
 		items = playlist_group['playlists']['items']
 
-		for playlist in items:
-			email = StringUtil.check_string_for_email(playlist['description'])
-			insta = StringUtil.check_string_for_insta(playlist['description'])
+		for item in items:
+			playlist = Playlist.find_playlist_by_id(item['id'])
 
-			if email or insta:
-				playlists.append({
-					'id': playlist['id'],
-					'name': playlist['name'],
-					'description': playlist['description'],
-					'url': playlist['external_urls']['spotify'],
-					'tracks': playlist['tracks']['total'],
-					'owner': {
-						'id': playlist['owner']['id'],
-						'display_name': playlist['owner']['display_name'],
-						'url': playlist['owner']['href'],
-						'email': email,
-						'insta': insta
-					}
-				})
+			if playlist is None:
+				email = StringUtil.check_string_for_email(item['description'])
+				insta = StringUtil.check_string_for_insta(item['description'])
 
-	return playlists
+				if email or insta:
+					playlist = Playlist()
+					playlist.spotify_id = item['id']
+					playlist.name = item['name']
+					playlist.description = item['description']
+					playlist.url = item['external_urls']['spotify']
 
-async def get_recommendations(queries: list) -> list:
+					owner = Owner.find_owner_by_id(item['owner']['id'])
+					if owner is None:
+						owner = Owner()
+						owner.spotify_id = item['owner']['id']
+						owner.display_name = item['owner']['display_name']
+						owner.email_address = email
+						owner.instagram_handle = insta
+
+						db.session.add(owner)
+					
+					owner.playlists.append(playlist)
+					playlist.owner_id = owner.spotify_id
+					db.session.add(playlist)
+			
+			if playlist is not None:
+				playlists.append(playlist)
+		
+	db.session.commit()
+	schema = PlaylistSchema(many=True)
+	result = schema.dump(playlists)
+	return result
+
+async def get_recommendations(queries: list):
 	async with aiohttp.ClientSession() as session:
 		data = await get_all_queries(session, queries)
 		results = extract_playlist_info(data)
 		return results
 
-async def get_all_queries(session: aiohttp.ClientSession, queries: list) -> list:
+async def get_all_queries(session: aiohttp.ClientSession, queries: list):
 	tasks = []
 	for query in queries:
 		for offset in range(0, 1000, 50):
@@ -70,7 +86,7 @@ def search():
 	return items
 
 @playlist_finder_blueprint.route('/recommendations')
-def recommendations() -> list:
+def recommendations():
 	keyword = request.args.get('keyword')
 	genres = request.args.get('genres')
 	artist_ids = request.args.get('artists') 
@@ -82,16 +98,40 @@ def recommendations() -> list:
 		google_urls = []
 		playlists = []
 
-		recommendations = api.get_recommendations(artist_ids, primary_genre, track_ids, 5)
+		recommendations = api.get_recommendations(artist_ids, primary_genre, track_ids, 50)
+
+		new_songs = []
+		new_artists = []
 		for track in recommendations['tracks']:
-			track_name = track['name']
-			track_artist = track['artists'][0]['name']
+			song = Song.find_song_by_id(track['id'])
 
-			google_urls.append(build_search_url(track_name, track_artist))
+			if song is None:
+				song = Song()
+				song.spotify_id = track['id']
+				song.title = track['name']
+				song.popularity = track['popularity']
 
-		# if google_urls:
-		# 	google_playlists = asyncio.run(get_playlists(google_urls))
-		# 	playlists.extend(google_playlists)
+				artist = Artist.find_artist_by_id(track['artists'][0]['id'])
+
+				if artist is None:
+					artist = Artist()
+					artist.spotify_id = track['artists'][0]['id']
+					artist.name = track['artists'][0]['name']
+					new_artists.append(artist)
+				
+				artist.songs.append(song)
+				song.artist_id = artist.spotify_id
+				new_songs.append(song)
+			else:
+				matching_playlists = Playlist.find_playlists_by_song_id(song.spotify_id)
+
+				if matching_playlists:
+					playlists.extend(matching_playlists)
+			
+
+		db.session.add_all(new_artists)
+		db.session.add_all(new_songs)
+		db.session.commit()
 
 		artists = []
 		for id in artist_ids.split(','):
@@ -99,15 +139,12 @@ def recommendations() -> list:
 			artists.append(artist['name'])
 
 		genres = genres.split(',')
-
 		queries = [*artists, *genres]
 
 		if keyword:
 			queries.insert(0, keyword)
 
-		print(queries)
-
-		results = asyncio.run(get_recommendations(queries=queries))
+		results = asyncio.run(get_recommendations(queries))
 		playlists.extend(results)
 
 		return playlists
