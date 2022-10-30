@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from app.database import db
+from app.extensions import db
 
 song_in_playlist = db.Table(
 	'song_in_playlist',

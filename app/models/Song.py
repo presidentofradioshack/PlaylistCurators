@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from app.database import db
+from app.extensions import db, ma
 from sqlalchemy import SMALLINT, VARCHAR, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -13,9 +13,6 @@ class Song(db.Model):
 	popularity = Column(SMALLINT)
 	artist_id = Column(ForeignKey('artist.spotify_id'))
 	artist = relationship('Artist', back_populates='songs')
-
-	def __repr__(self):
-		return f'{self.title}'
 
 	def find_song_by_id(id):
 		song = db.session.execute(
