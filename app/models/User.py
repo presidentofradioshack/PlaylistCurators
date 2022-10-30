@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from app import db
-from sqlalchemy import  VARCHAR, Column, DateTime, Integer
+from app.database import db
+from sqlalchemy import  BOOLEAN, VARCHAR, Column, DateTime, Integer
 
 
 @dataclass
@@ -12,3 +12,4 @@ class User(db.Model):
 	email_address = Column(VARCHAR(256), unique=True, nullable=False)
 	password = Column(VARCHAR(256), nullable=False)
 	created_on = Column(DateTime, nullable=False)
+	is_admin = Column(BOOLEAN, default=False, nullable=False)
