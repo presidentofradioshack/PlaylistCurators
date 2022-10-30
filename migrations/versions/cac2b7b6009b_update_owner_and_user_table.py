@@ -22,6 +22,7 @@ def upgrade():
         batch_op.alter_column('url',
                existing_type=sa.VARCHAR(length=128),
                nullable=True)
+        batch_op.add_column(sa.Column('spotify_id', sa.String(40)))
         batch_op.create_unique_constraint('spotify_id', ['spotify_id'])
         batch_op.drop_column('is_admin')
 

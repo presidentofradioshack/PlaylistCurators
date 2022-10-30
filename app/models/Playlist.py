@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from marshmallow import Schema, fields
-from app.database import db
+from app.extensions import db, ma
 from sqlalchemy import VARCHAR, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from app.models.Song_In_Playlist import song_in_playlist
-from app.models.Owner import OwnerSchema
 
 @dataclass
 class Playlist(db.Model):
@@ -15,7 +13,7 @@ class Playlist(db.Model):
 	name = Column(VARCHAR(200), nullable=False)
 	description = Column(VARCHAR(300))
 	url = Column(VARCHAR(128), nullable=False)
-	owner_id = Column(ForeignKey('owner.id'), nullable=False)
+	owner_id = Column(ForeignKey('owner.spotify_id'), nullable=False)
 	songs = relationship('Song', secondary=song_in_playlist)
 	owner = relationship('Owner', back_populates='playlists')
 
@@ -34,9 +32,3 @@ class Playlist(db.Model):
 		).scalars().all()
 
 		return playlists
-
-class PlaylistSchema(Schema):
-	spotify_id = fields.Str()
-	name = fields.Str()
-	url = fields.Str()
-	owner = fields.Nested(OwnerSchema)

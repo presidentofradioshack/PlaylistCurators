@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from app.database import db
+from app.extensions import db
 from sqlalchemy import JSON, Column, ForeignKey, Integer
 
 @dataclass

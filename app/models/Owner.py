@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-
-from marshmallow import Schema, fields
-from app.database import db
+from app.extensions import db, ma
 from sqlalchemy import VARCHAR, Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -23,10 +21,3 @@ class Owner(db.Model):
 		).scalars().first()
 
 		return owner
-	
-class OwnerSchema(Schema):
-	spotify_id = fields.Str()
-	display_name = fields.Str()
-	url = fields.Url()
-	email_address = fields.Email()
-	instagram_handle = fields.Str()
