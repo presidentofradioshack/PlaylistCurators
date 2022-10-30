@@ -4,13 +4,13 @@ import aiohttp
 from flask import Blueprint, request
 from app.spotify.api import *
 from app.models.Artist import Artist
-from app.models.Playlist import Playlist
 from app.models.Owner import Owner
-from app.models.Playlist import PlaylistSchema
+from app.models.Playlist import Playlist
+from app.models.Song import Song
+from app.models.PlaylistSchema import playlists_schema
 from .google import *
 from .util import StringUtil
-from app.models.Song import Song
-from app.database import db
+from app.extensions import db
 
 playlist_finder_blueprint = Blueprint('playlist_finder_blueprint', __name__)
 
@@ -46,7 +46,7 @@ def extract_playlist_info(response: list):
 
 						db.session.add(owner)
 					
-					owner.playlists.append(playlist)
+					playlist.owner = owner
 					playlist.owner_id = owner.spotify_id
 					db.session.add(playlist)
 			
@@ -54,8 +54,7 @@ def extract_playlist_info(response: list):
 				playlists.append(playlist)
 		
 	db.session.commit()
-	schema = PlaylistSchema(many=True)
-	result = schema.dump(playlists)
+	result = playlists_schema.dump(playlists)
 	return result
 
 async def get_recommendations(queries: list):
@@ -111,23 +110,25 @@ def recommendations():
 				song.title = track['name']
 				song.popularity = track['popularity']
 
-				artist = Artist.find_artist_by_id(track['artists'][0]['id'])
+				artist_id = track['artists'][0]['id']
+				artist = Artist.find_artist_by_id(artist_id)
 
-				if artist is None:
+				if artist is None and not any(new.spotify_id == artist_id for new in new_artists):
 					artist = Artist()
-					artist.spotify_id = track['artists'][0]['id']
+					artist.spotify_id = artist_id
 					artist.name = track['artists'][0]['name']
 					new_artists.append(artist)
-				
-				artist.songs.append(song)
-				song.artist_id = artist.spotify_id
-				new_songs.append(song)
+
+				if artist is not None:
+					artist.songs.append(song)
+					song.artist_id = artist.spotify_id
+					new_songs.append(song)
 			else:
 				matching_playlists = Playlist.find_playlists_by_song_id(song.spotify_id)
 
 				if matching_playlists:
-					playlists.extend(matching_playlists)
-			
+					results = playlists_schema.dump(matching_playlists)
+					playlists.extend(results)
 
 		db.session.add_all(new_artists)
 		db.session.add_all(new_songs)
